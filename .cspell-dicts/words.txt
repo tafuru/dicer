@@ -1,0 +1,39 @@
+# Microsoft
+devcontainers
+cpptools
+
+# Linux
+noninteractive
+
+# CMake
+DCMAKE
+DLLVM
+CTEST
+pargs
+kwargs
+cpmaddpackage
+cpmaddpackagekwargs
+cpmfindpackage
+
+# C/C++
+freflection
+Weverything
+tparam
+doctest
+charconv
+chrono
+libcxx
+libcxxabi
+cppcoreguidelines
+bugprone
+
+# Python
+pyyaml
+
+# Task
+dotenv
+taskfile
+
+# Account IDs
+TheLartians
+audacioustux

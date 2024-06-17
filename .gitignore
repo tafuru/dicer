@@ -1,0 +1,11 @@
+# Build artifacts
+/build/
+
+# Task caches
+/.task/
+
+# CSpell cache file
+/.cspellcache
+
+# Dotenv
+/.env

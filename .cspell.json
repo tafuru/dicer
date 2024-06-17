@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/master/cspell.schema.json",
+  "version": "0.2",
+  "language": "en",
+  "ignorePaths": [
+    ".git/**",
+    ".task/**",
+    "build/**",
+    "LICENSE"
+  ],
+  "dictionaryDefinitions": [
+    {
+      "name": "words",
+      "path": "./.cspell-dicts/words.txt",
+      "addWords": true
+    }
+  ],
+  "dictionaries": [
+    "softwareTerms",
+    "public-licenses",
+    "misc",
+    "fonts",
+    "words",
+    "cpp",
+    "bash",
+    "makefile",
+    "git",
+    "markdown"
+  ]
+}

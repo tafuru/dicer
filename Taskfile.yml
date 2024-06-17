@@ -1,0 +1,134 @@
+version: '3'
+
+vars:
+  PROJECT_NAME: dicer
+
+env:
+  CMAKE_BUILD_TYPE: Release
+  CMAKE_GENERATOR: Ninja
+  CMAKE_CXX_COMPILER_LAUNCHER: ccache
+  CMAKE_EXPORT_COMPILE_COMMANDS: ON
+  CXX: clang++
+  CXXFLAGS: -stdlib=libc++
+  LDFLAGS: -fuse-ld=mold -L/usr/local/lib -Wl,-rpath /usr/local/lib
+  CPM_SOURCE_CACHE: ~/.cache/CPM
+
+tasks:
+  init:
+    internal: true
+    run: once
+    dotenv: [.env]
+    requires:
+      vars: [BUILD_TYPE]
+    cmds:
+      - cmake -B "build/{{.BUILD_TYPE}}/" -DCMAKE_BUILD_TYPE="{{.BUILD_TYPE}}" -Wno-dev
+    sources:
+      - "**/CMakeLists.txt"
+      - exclude: "build/**/*"
+    status:
+      - test -f "build/{{.BUILD_TYPE}}/CMakeCache.txt"
+
+  build:
+    desc: Build the project
+    run: once
+    dotenv: [.env]
+    vars:
+      BUILD_TYPE: '{{default "$CMAKE_BUILD_TYPE" .BUILD_TYPE}}'
+    cmds:
+      - cmake --build "build/{{.BUILD_TYPE}}/" --target "{{.PROJECT_NAME}}"
+      - cmd: ln -sf "$(pwd)/build/{{.BUILD_TYPE}}/compile_commands.json" build
+        ignore_error: true
+        silent: true
+    deps:
+      - task: init
+        vars: { BUILD_TYPE: '{{.BUILD_TYPE}}' }
+
+  build:debug:
+    desc: Build the project for debugging
+    cmds:
+      - task: build
+        vars: { BUILD_TYPE: Debug }
+
+  build:release:
+    desc: Build the project for release
+    cmds:
+      - task: build
+        vars: { BUILD_TYPE: Release }
+
+  build:test:
+    internal: true
+    run: once
+    dotenv: [.env]
+    cmds:
+      - task: build
+      - cmake --build "build/$CMAKE_BUILD_TYPE/" --target "{{.PROJECT_NAME}}_test"
+
+  test:
+    desc: Run tests for the project
+    dotenv: [.env]
+    cmds:
+      - task: build:test
+      - CTEST_OUTPUT_ON_FAILURE=1 cmake --build "build/$CMAKE_BUILD_TYPE/" --target test
+
+  format:cmake:
+    internal: true
+    vars:
+      CHECK: '{{default "false" .CHECK}}'
+    sources:
+      - "**/CMakeLists.txt"
+      - "**/*.cmake"
+      - exclude: "build/**/*"
+    cmds:
+      - for: sources
+        cmd: cmake-format {{if eq .CHECK "false"}}-i{{else}}--check{{end}} {{.ITEM}}
+
+  format:cpp:
+    internal: true
+    vars:
+      CHECK: '{{default "false" .CHECK}}'
+    sources:
+      - "**/*.hpp"
+      - "**/*.cpp"
+      - exclude: "build/**/*"
+    cmds:
+      - for: sources
+        cmd: clang-format {{if eq .CHECK "false"}}-i{{else}}-Werror -n{{end}} {{.ITEM}}
+    deps:
+      - task: build:test
+
+  format:
+    desc: Format C++ files and CMakeLists.txt
+    cmds:
+      - task: format:cmake
+      - task: format:cpp
+
+  lint:spell:
+    internal: true
+    cmds:
+      - cspell --no-progress --show-context --cache --dot --gitignore .
+
+  lint:cpp:
+    internal: true
+    sources:
+      - "**/*.cpp"
+      - exclude: "build/**/*"
+    cmds:
+      - for: sources
+        cmd: clang-tidy -p build --header-filter=.* --quiet {{.ITEM}}
+    deps:
+      - task: build:test
+
+  lint:
+    desc: Lint the project files
+    cmds:
+      - task: lint:spell
+      - task: format:cmake
+        vars: { CHECK: true }
+      - task: format:cpp
+        vars: { CHECK: true }
+      - task: lint:cpp
+
+  clean:
+    desc: Remove the task artifacts
+    cmds:
+      - rm -rf .task build .cspellcache
