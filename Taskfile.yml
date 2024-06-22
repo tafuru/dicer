@@ -10,7 +10,7 @@ env:
   CMAKE_EXPORT_COMPILE_COMMANDS: ON
   CXX: clang++
   CXXFLAGS: -stdlib=libc++
-  LDFLAGS: -fuse-ld=mold -L/usr/local/lib -Wl,-rpath /usr/local/lib
+  LDFLAGS: -fuse-ld=mold
   CPM_SOURCE_CACHE: ~/.cache/CPM
 
 tasks:
