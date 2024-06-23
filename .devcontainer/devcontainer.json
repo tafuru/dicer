@@ -3,7 +3,8 @@
 {
   "name": "dicer-dev",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "Dockerfile",
+    "cacheFrom": "ghcr.io/tafuru/dicer/devcontainer:latest"
   },
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
