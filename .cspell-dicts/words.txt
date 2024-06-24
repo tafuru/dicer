@@ -19,6 +19,7 @@ cpmfindpackage
 # C/C++
 freflection
 Weverything
+Werror
 tparam
 doctest
 charconv
