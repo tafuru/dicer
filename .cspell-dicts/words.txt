@@ -29,6 +29,9 @@ libcxxabi
 cppcoreguidelines
 bugprone
 
+# Encoding
+Varint
+
 # Python
 pyyaml
 
