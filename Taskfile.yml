@@ -110,6 +110,7 @@ tasks:
   lint:cpp:
     internal: true
     sources:
+      - "**/*.hpp"
       - "**/*.cpp"
       - exclude: "build/**/*"
     cmds:
