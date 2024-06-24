@@ -44,6 +44,7 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           cacheFrom: ghcr.io/${{ github.repository }}/devcontainer
+          push: never
           runCmd: task test
 
   lint:
@@ -58,4 +59,5 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           cacheFrom: ghcr.io/${{ github.repository }}/devcontainer
+          push: never
           runCmd: task lint
