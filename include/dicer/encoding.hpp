@@ -3,6 +3,7 @@
 
 #include <concepts>
 #include <cstddef>
+#include <optional>
 #include <type_traits>
 #include <vector>
 
@@ -37,6 +38,18 @@ auto DecodeZigZag(UInt value) -> std::make_signed_t<UInt>;
  */
 template <std::unsigned_integral UInt>
 auto EncodeVarint(UInt value) -> std::vector<std::byte>;
+
+/**
+ * @brief Decodes a Varint-encoded value into an unsigned integer.
+ *
+ * @tparam UInt An unsigned integral type.
+ * @param buffer A vector of bytes representing the Varint-encoded value.
+ * @return An optional containing the decoded unsigned integer value, or std::nullopt if decoding fails.
+ *
+ * @note The function returns std::nullopt if the input is invalid (e.g., incomplete encoding or integer overflow).
+ */
+template <std::unsigned_integral UInt>
+auto DecodeVarint(const std::vector<std::byte>& buffer) -> std::optional<UInt>;
 
 }  // namespace dicer
 
