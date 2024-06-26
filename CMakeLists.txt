@@ -38,7 +38,7 @@ enable_testing()
 set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
 add_executable(${PROJECT_TEST_NAME})
 
-file(GLOB test_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp")
+file(GLOB_RECURSE test_sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/test/*.cpp")
 target_sources(${PROJECT_TEST_NAME} PRIVATE ${test_sources})
 
 target_compile_features(${PROJECT_TEST_NAME} PRIVATE cxx_std_26)
